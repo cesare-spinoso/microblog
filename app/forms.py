@@ -36,3 +36,15 @@ class EditProfileForm(FlaskForm):
     username = StringField('New username:', validators=[DataRequired()]) # What if they don't want to change username?
     about_me = TextAreaField('About me:', validators=[Length(0,140)])
     submit = SubmitField('Submit')
+
+
+    # To fix the bug with the username!
+    def __init__(self, original_username, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self.original_username = original_username
+
+    def validate_username(self, username):
+        if username.data != self.original_username:
+            user = User.query.filter_by(username=self.username.data).first()
+            if user is not None:
+                raise ValidationError("Please choose a different username. This one is already assigned.")
