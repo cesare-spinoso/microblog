@@ -15,7 +15,7 @@ which might vary from application to application use url_for(view function name)
         {% if current_user.is_anonymous %} <!-- is_anonymous is true is no user is currently logged in -->
         <a href="{{ url_for('login') }}">Login</a></div>
         {% else %}
-        <a href="{{url_for('user', username=current_user.username)}}"></a>
+        <a href="{{url_for('user', username=current_user.username)}}">Profile</a>
         <a href="{{url_for('logout')}}">Logout</a>
         {% endif %}
     <hr>

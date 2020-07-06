@@ -1,10 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>User: {{user.username}}</h1>
+<table>
+    <tr>
+        <td><img src="{{user.avatar(128)}}" alt="Profile pic not available."></td>
+        <td><h1>User: {{user.username}}</h1>
+            <p>{% if user.about_me %} {{ user.about_me }} {% endif %}</p><br>
+            <p>{% if user.last_seen %} Last seen on : {{ user.last_seen }}</p>
+        {% endif %}</td>
+    </tr>
+    <!-- VERY IMPORTANT: Add an if user == current_user, so if the current_user is viewing another profile,
+    they won't be able to change their infor -->
+</table>
+    {% if user == current_user %} <a href="{{url_for('edit_profile')}}">Want to change you profile? Click here!</a>{% endif %}
 <hr>
 {% for post in posts %}
-<p>
-    {{post.author.username}} says : {{post.body}}
-</p>
+<!--Instead of using this hardcoded version, recycle the subtemplate-->
+<!--<table>-->
+<!--    <tr>-->
+<!--        <td><img src="{{user.avatar(36)}}"></td>-->
+<!--        <td>{{post.author.username}} says : {{post.body}}</td>-->
+<!--    </tr>-->
+<!--</table>-->
+{% include '_post.html' %}
+{% endfor %}
 {% endblock %}

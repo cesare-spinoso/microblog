@@ -1,0 +1,11 @@
+<!-- This is a SUB template for the blog posts that will put the
+ avatar and text together. Since this is used in both the index and
+ the user page, better to put it together so if need to modify it,
+ only modify it once!-->
+<table>
+    <tr>
+      <td><img src="{{user.avatar(36)}}"></td>
+        <td>{{post.author.username}} says : <br>
+        {{ post.body }}</td>
+    </tr>
+</table>
