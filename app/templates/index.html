@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %} <!-- The block name "content" is the same as the one for base.html, so
+Flask knows how to render it correctly -->
+<h1>Hi there, {{current_user.username}}!</h1>
+<h2>Here are some blog posts:</h2>
+{% for post in posts%}
+<div>
+    <p>{{post.author.name}} says :</p>  <i> {{ post.body }}</i>
+</div>
+{% endfor %}
+{% endblock %}

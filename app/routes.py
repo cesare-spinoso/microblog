@@ -1,0 +1,108 @@
+from app import app, db
+from flask import render_template, flash, redirect, url_for, request
+from app.forms import LoginForm, RegistrationForm
+from flask_login import current_user, login_user, logout_user, login_required
+from app.models import User
+from werkzeug.urls import url_parse
+
+# Python decorator, when URL request is / or /index then follow the function below
+@app.route('/')
+@app.route('/index')
+@login_required # Also sets the initial url (which was not accessible) as next = in the URL request
+def index(): # View function name is index so url_for('index')
+    # A dummy user for now
+    # user = {'name': 'Giancarlo'},
+    # Some dummy posts
+    posts = [
+        {
+            'author' : {'name' : 'Jon'},
+            'body' : 'It is a nice day'
+        },
+        {
+            'author' : {'name' : 'Doe'},
+            'body' : 'I humbly agree'
+        }
+    ]
+
+    # Takes in a template file name and a variable list of args
+    # It then returns the template (in this case index.html) but with all the placeholders replaced
+    return render_template('index.html', title='Front', posts=posts)
+
+
+@app.route('/login', methods=['GET', 'POST'])  # This view function accepts GET and POST requests (default was only GET)
+def login():
+    # In the weird case where the currenlty logged in user access the Login page again
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    form = LoginForm()
+
+    # ALL the form processing work done here (validate on submit)
+    # If there is a GET request it is skipped and goes to the render template
+    # When there is a POST request sent (resulting from a submit on POST) if all validation is good passes otherwise
+    # also renders back (with error messages)
+    if form.validate_on_submit():
+        # Flash shows message to user --> Need to implement a way to SHOW the flash message, done in base.html
+        # flash('Login requested for user {}'.format(form.username.data))
+        # Replacing with real login functionality
+        # Find user with the username credentials (since username is unique)
+        user = User.query.filter_by(username = form.username.data).first()
+        # If uses is None (No entry) or password does not match redirect to index
+        if user is None or not user.check_pwd(form.password.data):
+            flash('Invalid password or email. Please try again!')
+            return redirect(url_for('login'))
+        # Otherwise, log in the user
+        login_user(user, remember=form.remember_me.data) # Current user is now set to that user
+        # If tried to access a restricted page and successfully logged in, redirect it back to that page
+        next_page = request.args.get('next') # request is what is in the GEt and .args puts it in a dictionary
+        # format so can get \next
+        if not next_page or url_parse(next_page).netloc != '': # url_parse is used to check if next = contains
+            # a URL path that is not relative to the website, i.e. it could be an absolute URL to another
+            # page which is malicious
+            next_page = url_for('index')
+        # Redirect instructs the client web browser to go to another page
+        return redirect(next_page)
+    return render_template('login.html', title='Login', form=form)
+
+@app.route('/logout')
+def logout():
+    # Expose this as a conditional on the index page (in base navbar)
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_pwd(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash("You have registered to this amazing microblog! Good luck :)")
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+# To create a user profile view function
+ # Dynamic view function which takes
+    # <username> as input (returns username as text)
+@app.route('/user/<username>')
+@login_required # accessible only to logged in users
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    # first_or_404() works exactly like first() except that when there
+    # is nothing to output it results in a 404 error that's sent back to the clikent
+
+    # saves the time of actually checking if valid username and
+    # just throws a 404 error
+
+    # fake list of posts
+    posts = [
+        {'author' : user, 'body' : 'Test post 1' },
+        {'author' : user, 'body' : 'Test post 2'}
+    ]
+    return render_template('user.html', user=user, posts=posts)
+
+
+

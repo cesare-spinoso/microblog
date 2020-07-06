@@ -1,0 +1,14 @@
+Generic single-database configuration.
+
+Used flask db init to set up migration repo which will track all of the changes made to the DB schema. There is a chance
+you might need to change the schema in the future.
+
+To set up automaatic migration use flask db migrate [-m "optional message"].
+
+Once you run this cmd, you have generated a script which can either upgrade (to the new schema) or downgrade (to a previous schema)
+
+But note that running flask db migrate will not modify the db schema.
+
+To do this run flask db upgrade [to go to the new schema] or downgrade [to go to prev schema].
+
+To access the DB in shell environment (and do testing) use flask shell in base directory.

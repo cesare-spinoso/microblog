@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>
+        {% if title %}
+        The {{title}} Page
+        {% else %}
+        A Page
+        {% endif %}
+    </title>
+</head>
+<body>
+<!-- <div>Microblog navbar: <a href="/index">Home</a> <a href="/login">Login</a></div>. Instead of using /index and /login
+which might vary from application to application use url_for(view function name).-->
+    <div>Microblog navbar: <a href="{{ url_for('index') }}">Home</a>
+        {% if current_user.is_anonymous %} <!-- is_anonymous is true is no user is currently logged in -->
+        <a href="{{ url_for('login') }}">Login</a></div>
+        {% else %}
+        <a href="{{url_for('user', username=current_user.username)}}"></a>
+        <a href="{{url_for('logout')}}">Logout</a>
+        {% endif %}
+    <hr>
+    {% with messages = get_flashed_messages() %} <!-- Flask method that returns a list of all msgs registered by flash() -->
+    {% if messages %}
+    <ul>
+        {% for msg in messages %}
+        <li>{{ msg }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html>
