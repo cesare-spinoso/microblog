@@ -7,6 +7,7 @@ import logging # For logging the stack trace, the email sending is covered with 
 from logging.handlers import SMTPHandler # for the email logging
 from logging.handlers import RotatingFileHandler # for the file logging
 import os
+from flask_mail import Mail
 
 app = Flask(__name__)  # instance of a flask application
 app.config.from_object(Config)
@@ -15,7 +16,7 @@ migrate = Migrate(app, db) # db migration, in case there are some structural cha
 login = LoginManager(app)
 login.login_view = 'login'# function name which will allow you to do a cool require login trick
 # where once user has logged in they get redirected to the protected page
-
+mail = Mail(app) # for emailing to users
 
 if not app.debug: # Only send when not debugging
     if app.config['MAIL_SERVER']: # And a mail server is configured

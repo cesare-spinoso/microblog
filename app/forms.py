@@ -60,3 +60,16 @@ class PostForm(FlaskForm):
         DataRequired(), Length(min=1, max=140, message="We are copying Twitter 140 characters max!")
     ])
     submit = SubmitField('Submit')
+
+# For the password reset REQUEST
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email associated with your account:', validators=[DataRequired(), Email()])
+    submit = SubmitField('Reset password!')
+
+
+# For the actual password reset
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Enter new password: ', validators=[DataRequired()])
+    password1 = PasswordField('Re-enter the password: ', validators=[DataRequired(),
+                                                                     EqualTo('password')])
+    submit = SubmitField('Reset!')

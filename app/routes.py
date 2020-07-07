@@ -1,6 +1,7 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm, PostForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
+from app.email import send_password_reset_email
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Post
 from werkzeug.urls import url_parse
@@ -263,5 +264,37 @@ def explore():
     # Didn't need to create a new html page because the form will simply not show up
     # Nice
 
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for further instructions.')
+        return redirect(url_for('login'))
+        # else: but you can allow people to know if email exists or not
+        #     flash('Invalid email')
+        #     return redirect(url_for('reset_password_request'))
+    return render_template('reset_password_request.html', title='Password Reset', form=form)
 
-
+# The token is placed in the url to identify the user who is trying to reset their password
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    # Check that you are not logged in and trying to be dumb
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    # Use the static method the veridy pwd
+    user = User.verify_reset_password_token(token)
+    # If the user is None redirect
+    if not user:
+        return redirect(url_for('index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_pwd(form.password.data)
+        db.session.commit()
+        flash('Password has been reset. Good luck :)')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)

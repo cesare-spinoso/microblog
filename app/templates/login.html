@@ -29,5 +29,9 @@
     <p>
         Don't have an account yet? <a href="{{url_for('register')}}">Click here to register!</a>
     </p>
+    <p>
+        Forgot your password :"(? No worries!
+        <a href="{{ url_for('reset_password_request')}}">Click here to reset it!</a>
+    </p>
 </form>
 {% endblock %}

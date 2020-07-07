@@ -5,6 +5,10 @@ from flask_login import UserMixin
 # For the profile avatar gravatar.com
 # Since the avatar belongs to the user, the logic is implemented here
 from hashlib import md5
+# Write token creation and verification in the User model
+from time import time
+import jwt
+from app import app
 
 # For users following other users, create a realtionship table user - users, which is many to
 # many
@@ -83,6 +87,21 @@ class User(UserMixin, db.Model):  # Inherits from db.Model base class for all mo
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
 
+    # Resetting password functionality
+    def get_reset_password_token(self, expires_in=600): # 10 minute token
+        return jwt.encode({'reset_password' : self.id, 'exp': time() + expires_in},
+                          app.config['SECRET_KEY'],
+                          algorithm='HS256').decode('utf-8') # encoding to utf8 necessary because converts to byte string
+
+    # Verify the token using jwt decode
+    # Use a try catch to check if it's a valid token i.e. NOT (not expired or cannot be validated)
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
+        except:
+            return None
+        return User.query.get(id) # Returns the user of that token
 
 
 
