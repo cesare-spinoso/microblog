@@ -53,3 +53,10 @@ class EditProfileForm(FlaskForm):
 # This will allow you to know if want to follow or unfollow
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
+
+# To publish posts on the home page
+class PostForm(FlaskForm):
+    post = TextAreaField('Blog post:', validators=[
+        DataRequired(), Length(min=1, max=140, message="We are copying Twitter 140 characters max!")
+    ])
+    submit = SubmitField('Submit')

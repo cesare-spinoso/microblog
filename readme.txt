@@ -8,6 +8,9 @@ password: root
 username: Taco
 password: caT
 
+username: jonn
+pwd: doe
+
 To debug:
 export FLASK_DEBUG=1
 

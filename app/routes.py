@@ -1,8 +1,8 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm, PostForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Post
 from werkzeug.urls import url_parse
 from datetime import datetime
 
@@ -20,27 +20,78 @@ def before_request():
 
 
 # Python decorator, when URL request is / or /index then follow the function below
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @login_required # Also sets the initial url (which was not accessible) as next = in the URL request
 def index(): # View function name is index so url_for('index')
+    # Form validation for posting stuff
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Posted!')
+        return redirect(url_for('index')) # Using redirects is standard practice so user doesn't
+    # resubmit the same form if they press refresh  Post/Redirect/Get pattern
+
+
     # A dummy user for now
     # user = {'name': 'Giancarlo'},
     # Some dummy posts
-    posts = [
-        {
-            'author' : {'name' : 'Jon'},
-            'body' : 'It is a nice day'
-        },
-        {
-            'author' : {'name' : 'Doe'},
-            'body' : 'I humbly agree'
-        }
-    ]
+    # posts = [
+    #     {
+    #         'author' : {'name' : 'Jon'},
+    #         'body' : 'It is a nice day'
+    #     },
+    #     {
+    #         'author' : {'name' : 'Doe'},
+    #         'body' : 'I humbly agree'
+    #     }
+    # ]
+
+    # The real deal posts
+    posts = current_user.followed_posts().all()
+
+    '''
+    The paginate method can be called on any query object from Flask-SQLAlchemy. It takes three arguments:
+
+    the page number, starting from 1
+    the number of items per page
+    an error flag. If True, when an out of range page is requested a 404 error will be automatically returned to the client. If False, an empty list will be returned for out of range pages.
+
+The return value from paginate is a Pagination object. The items attribute of this object contains the list of items in the requested page
+    '''
+
+    # Add pagination where only have a fixed number of posts per page
+    page = request.args.get('page', 1, type=int) # will be reading th apge number from url (get)
+    posts = current_user.followed_posts().paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    # Notice how added posts.items
+    '''
+    Paginate has 4 other methods that are useful for links:
+    
+    has_next: True if there is at least one more page after the current one
+    has_prev: True if there is at least one more page before the current one
+    next_num: page number for the next page
+    prev_num: page number for the previous page
+
+    '''
+    # To send the next and previous links
+    next_url = url_for('index', page=posts.next_num) \
+        if posts.has_next else None # What url_for does with parameter that it doesnt recognize?
+    # it automatically puts them as queries in the url! so here ?page=posts.next_num has been added to url
+    prev_url = url_for('index', page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template('index.html', title='Home', form=form,
+                           posts=posts.items, next_url=next_url,
+                           prev_url=prev_url)
+
+    # return render_template('index.html', title='Home', form=form,
+    #                        posts=posts.items)
 
     # Takes in a template file name and a variable list of args
     # It then returns the template (in this case index.html) but with all the placeholders replaced
-    return render_template('index.html', title='Front', posts=posts)
+    # return render_template('index.html', title='Front', posts=posts, form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])  # This view function accepts GET and POST requests (default was only GET)
@@ -111,16 +162,25 @@ def user(username):
     # saves the time of actually checking if valid username and
     # just throws a 404 error
 
-    # fake list of posts
-    posts = [
-        {'author' : user, 'body' : 'Test post 1' },
-        {'author' : user, 'body' : 'Test post 2'}
-    ]
-
+    #  fake list of posts
+    # posts = [
+    #     {'author' : user, 'body' : 'Test post 1' },
+    #     {'author' : user, 'body' : 'Test post 2'}
+    # ]
+    # Use actual posts
+    page = request.args.get('page', 1, type=int)
+    posts = user.posts.order_by(Post.timestamp.desc()).paginate(
+        page, app.config['POSTS_PER_PAGE'], False
+    )
+    next_url = url_for('user', username=user.username, page=posts.next_num) \
+        if posts.has_next else None # Included the extra username = because need to point back to  same user
+    prev_url = url_for('user', username=user.username, page=posts.prev_num) \
+        if posts.has_prev else None
     # Pass an empty form object for the follow/unfollow buttons
     form = EmptyForm()
 
-    return render_template('user.html',title='User', user=user, posts=posts, form=form)
+    return render_template('user.html', user=user, posts=posts.items,
+                           next_url=next_url, prev_url=prev_url, form=form)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -180,6 +240,28 @@ def unfollow(username):
         return redirect(url_for('user', username=username))
     else:
         return redirect(url_for('index'))
+
+
+# To be able to see all the users
+@app.route('/explore')
+@login_required
+def explore():
+    # Added pagination functionality
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('explore', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('explore', page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template("index.html", title='Explore', posts=posts.items,
+                          next_url=next_url, prev_url=prev_url)
+    # return render_template("index.html", title='Explore', posts=posts.items)
+
+    # posts = Post.query.order_by(Post.timestamp.desc()).all()
+    # return render_template('index.html', title='Explore', posts=posts)
+    # Didn't need to create a new html page because the form will simply not show up
+    # Nice
 
 
 
