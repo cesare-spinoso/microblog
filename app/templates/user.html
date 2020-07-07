@@ -5,14 +5,30 @@
     <tr>
         <td><img src="{{user.avatar(128)}}" alt="Profile pic not available."></td>
         <td><h1>User: {{user.username}}</h1>
-            <p>{% if user.about_me %} {{ user.about_me }} {% endif %}</p><br>
-            <p>{% if user.last_seen %} Last seen on : {{ user.last_seen }}</p>
-        {% endif %}</td>
+            <p>{% if user.about_me %} {{ user.about_me }} {% endif %}</p>
+            <p>{% if user.last_seen %} Last seen on : {{ user.last_seen }}{% endif %}</p>
+            <p>{{user.followers.count()}} followers, {{user.followed.count()}} following</p>
+        </td>
     </tr>
     <!-- VERY IMPORTANT: Add an if user == current_user, so if the current_user is viewing another profile,
     they won't be able to change their infor -->
 </table>
-    {% if user == current_user %} <a href="{{url_for('edit_profile')}}">Want to change you profile? Click here!</a>{% endif %}
+<p>{% if user == current_user %} <a href="{{url_for('edit_profile')}}">Want to change you profile? Click here!</a></p>
+{% elif not current_user.is_following(user) %}
+<p>
+    <form action="{{url_for('follow', username=user.username)}}" method="post">
+    {{form.hidden_tag()}}
+    {{form.submit(value='Follow')}}
+</form>
+</p>
+{% else %}
+<p>
+    <form action="{{url_for('unfollow', username=user.username)}}" method="post">
+    {{form.hidden_tag()}}
+    {{form.submit(value='Unfollow')}} <!-- The value writes over the 'Submit' label in the form module -->
+</form>
+</p>
+{% endif %}
 <hr>
 {% for post in posts %}
 <!--Instead of using this hardcoded version, recycle the subtemplate-->

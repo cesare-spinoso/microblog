@@ -6,6 +6,11 @@ from flask_login import UserMixin
 # Since the avatar belongs to the user, the logic is implemented here
 from hashlib import md5
 
+# For users following other users, create a realtionship table user - users, which is many to
+# many
+followers = db.Table('followers',
+                     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+                     db.Column('followed_id', db.Integer, db.ForeignKey('user.id')))
 
 # Create the user table as a class
 class User(UserMixin, db.Model):  # Inherits from db.Model base class for all models in SQLALCHEMY
@@ -20,6 +25,18 @@ class User(UserMixin, db.Model):  # Inherits from db.Model base class for all mo
     # Add more info to user profile page. Include description and last active
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Add the relationship info
+    followed = db.relationship(
+        'User',
+        secondary=followers, # To configure the association table of the relationship (done above)
+        primaryjoin=(followers.c.follower_id == id), # condition that links left side (the follower
+        # which we assume we are in) with the association table
+        secondaryjoin=(followers.c.followed_id == id), # same thing except the right side of the realtionship
+        backref=db.backref('followers', lazy='dynamic'), # from the left this is accessed with followed
+        # so from the right this will be followers, dynamic says to only run query when requested
+        lazy='dynamic' # same as the one above except it applied to user on left instead of right
+    )
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -42,6 +59,33 @@ class User(UserMixin, db.Model):  # Inherits from db.Model base class for all mo
         # This method will return the url to gavatar to grab the avatar
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
+
+    # Allow users to follow and unfollow each other
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user) # append and remove are part of the
+            # relationship object method's
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
+        # filter is a bit more flexible than fileter by
+
+    # Get the posts of all the people that you follow
+    def followed_posts(self):
+        followed =  Post.query.join(
+            followers, (followers.c.followed_id == Post.user_id)).filter(
+            followers.c.follower_id == self.id)
+        # Plus your own posts
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.timestamp.desc())
+
+
+
+
 # This load_user function is used by Flask-Login to remember the user navigating through different pages
 # It uses the id of the user which is passed as a string by Flask-Login (that's why use a cast to int)
 

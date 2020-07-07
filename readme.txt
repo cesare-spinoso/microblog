@@ -5,6 +5,9 @@ Note:
 username: admin
 password: root
 
+username: Taco
+password: caT
+
 To debug:
 export FLASK_DEBUG=1
 

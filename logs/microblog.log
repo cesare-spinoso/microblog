@@ -74,3 +74,32 @@ sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) UNIQUE constraint failed
 (Background on this error at: http://sqlalche.me/e/13/gkpj)
 2020-07-06 16:16:26,553 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
 2020-07-06 16:24:28,567 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 10:33:14,478 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 10:53:59,520 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 10:54:08,396 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 11:06:18,318 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 11:41:47,443 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 12:02:05,460 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 12:02:26,772 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 12:09:37,251 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 12:09:41,119 ERROR: Exception on /follow/Ces [POST] [in /home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py:1892]
+Traceback (most recent call last):
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/cesare/PycharmProjects/flask/app/routes.py", line 157, in follow
+    db.commit()
+AttributeError: 'SQLAlchemy' object has no attribute 'commit'
+2020-07-07 12:10:41,848 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]
+2020-07-07 12:21:02,483 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:46]

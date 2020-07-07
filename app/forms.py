@@ -39,8 +39,8 @@ class EditProfileForm(FlaskForm):
 
 
     # To fix the bug with the username!
-    def __init__(self, original_username, *args, **kwargs):
-        super(EditProfileForm, self).__init__(*args, **kwargs)
+    def __init__(self, original_username, *args, **kwargs): # constructor
+        super(EditProfileForm, self).__init__(*args, **kwargs) # using super for inheritance
         self.original_username = original_username
 
     def validate_username(self, username):
@@ -48,3 +48,8 @@ class EditProfileForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError("Please choose a different username. This one is already assigned.")
+
+# Form that only does a submit action, but use this for the post request
+# This will allow you to know if want to follow or unfollow
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')
