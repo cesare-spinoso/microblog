@@ -8,6 +8,7 @@ from logging.handlers import SMTPHandler # for the email logging
 from logging.handlers import RotatingFileHandler # for the file logging
 import os
 from flask_mail import Mail
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)  # instance of a flask application
 app.config.from_object(Config)
@@ -17,6 +18,7 @@ login = LoginManager(app)
 login.login_view = 'login'# function name which will allow you to do a cool require login trick
 # where once user has logged in they get redirected to the protected page
 mail = Mail(app) # for emailing to users
+bootstrap = Bootstrap(app)
 
 if not app.debug: # Only send when not debugging
     if app.config['MAIL_SERVER']: # And a mail server is configured

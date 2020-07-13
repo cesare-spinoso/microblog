@@ -1,23 +1,17 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block content %} <!-- The block name "content" is the same as the one for base.html, so
+{% block app_content %} <!-- The block name "content" is the same as the one for base.html, so
 Flask knows how to render it correctly -->
 <h1>Hi there, {{current_user.username}}!</h1>
 {% if form %}
 <h2>Microblog!</h2>
-<form action="" method="post">
-    {{form.hidden_tag()}}
-    <p>
-        {{form.post.label}} <br>
-        {{form.post(cols=32, rows=4)}} <br>
-        {% for error in form.post.errors %}
-        <span style="color: red;">{{error}}</span>
-        {% endfor %}
-    </p>
-    <p>
-        {{form.submit()}}
-    </p>
-</form>
+<h1>Register</h1>
+<div class="row">
+    <div class="col-md-4">
+        {{ wtf.quick_form(form) }}
+    </div>
+</div>
 {% endif %}
 <h2>Here are {% if form %} your peeps {% else %} all the {% endif %} blog posts:</h2>
 {% for post in posts%}
@@ -25,10 +19,27 @@ Flask knows how to render it correctly -->
     {% include '_post.html' %}
 </div>
 {% endfor %}
-{%if prev_url %}
-<a href="{{ prev_url }}"><-- Newer posts</a>
-{% endif %}
-{% if next_url %}
-<a href="{{ next_url }}">Older posts --></a>
-{% endif %}
+
+
+<!--{%if prev_url %}-->
+<!--<a href="{{ prev_url }}"><&#45;&#45; Newer posts</a>-->
+<!--{% endif %}-->
+<!--{% if next_url %}-->
+<!--<a href="{{ next_url }}">Older posts &ndash;&gt;</a>-->
+<!--{% endif %}-->
+
+<nav aria-label="...">
+    <ul class="pager">
+        <li class="previous{% if not prev_url %} disabled{% endif %}">
+            <a href="{{ prev_url or '#' }}">
+                <span aria-hidden="true">&larr;</span> Newer posts
+            </a>
+        </li>
+        <li class="next{% if not next_url %} disabled{% endif %}">
+            <a href="{{ next_url or '#' }}">
+                Older posts <span aria-hidden="true">&rarr;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 {% endblock %}

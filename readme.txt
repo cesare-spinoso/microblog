@@ -56,7 +56,10 @@ AND THEN set up the shell version by first (outside of shell) doing all the expo
 THEN run flask shell and use the following:
 from flask_mail import Message
 from app import mail
-msg = Message('Hello', sender=app.config['ADMINS'][0], recipients=['c.sdp@hotmail.com', 'cesare.spinoso-dipiano@concordia.ca'])
+msg = Message('Hello', sender=app.config['ADMINS'][0], recipients=['cesare.spinoso@gmail.com'])
 msg.body = 'text body'
 msg.html = '<h1>Thank you for choosing microblog. Bye!</h1>'
 mail.send(msg)
+
+For the bootstrap:
+pip install flask-bootstrap

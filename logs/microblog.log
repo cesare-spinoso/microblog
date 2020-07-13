@@ -1,4 +1,4 @@
-2020-07-07 17:12:43,884 ERROR: Exception on /reset_password_request [POST] [in /home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py:1892]
+2020-07-13 18:25:39,910 ERROR: Exception on /reset_password_request [POST] [in /home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py:1892]
 Traceback (most recent call last):
   File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask_mail.py", line 492, in send
     message.send(connection)
@@ -35,9 +35,9 @@ Traceback (most recent call last):
     return self.view_functions[rule.endpoint](**req.view_args)
   File "/home/cesare/PycharmProjects/flask/app/routes.py", line 275, in reset_password_request
     send_password_reset_email(user)
-  File "/home/cesare/PycharmProjects/flask/app/email.py", line 18, in send_password_reset_email
-    text_html='JUST A TEST WE DONT HAVE YOUR PWD')#render_template('email/reset_password.html', user=user, token=token))
-  File "/home/cesare/PycharmProjects/flask/app/email.py", line 10, in send_email
+  File "/home/cesare/PycharmProjects/flask/app/email.py", line 27, in send_password_reset_email
+    text_html=render_template('email/reset_password.html', user=user, token=token))
+  File "/home/cesare/PycharmProjects/flask/app/email.py", line 19, in send_email
     mail.send(msg)
   File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask_mail.py", line 492, in send
     message.send(connection)
@@ -52,6 +52,64 @@ Traceback (most recent call last):
   File "/usr/lib/python3.7/smtplib.py", line 359, in send
     raise SMTPServerDisconnected('please run connect() first')
 smtplib.SMTPServerDisconnected: please run connect() first
-2020-07-07 17:14:34,095 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:47]
-2020-07-07 17:29:38,727 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:47]
-2020-07-07 17:42:25,164 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:47]
+2020-07-13 18:28:01,209 ERROR: Exception on /reset_password_request [POST] [in /home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py:1892]
+Traceback (most recent call last):
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask_mail.py", line 492, in send
+    message.send(connection)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask_mail.py", line 427, in send
+    connection.send(self)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask_mail.py", line 192, in send
+    message.rcpt_options)
+  File "/usr/lib/python3.7/smtplib.py", line 852, in sendmail
+    self.ehlo_or_helo_if_needed()
+  File "/usr/lib/python3.7/smtplib.py", line 600, in ehlo_or_helo_if_needed
+    if not (200 <= self.ehlo()[0] <= 299):
+  File "/usr/lib/python3.7/smtplib.py", line 440, in ehlo
+    self.putcmd(self.ehlo_msg, name or self.local_hostname)
+  File "/usr/lib/python3.7/smtplib.py", line 367, in putcmd
+    self.send(str)
+  File "/usr/lib/python3.7/smtplib.py", line 359, in send
+    raise SMTPServerDisconnected('please run connect() first')
+smtplib.SMTPServerDisconnected: please run connect() first
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/cesare/PycharmProjects/flask/app/routes.py", line 275, in reset_password_request
+    send_password_reset_email(user)
+  File "/home/cesare/PycharmProjects/flask/app/email.py", line 27, in send_password_reset_email
+    text_html=render_template('email/reset_password.html', user=user, token=token))
+  File "/home/cesare/PycharmProjects/flask/app/email.py", line 19, in send_email
+    mail.send(msg)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask_mail.py", line 492, in send
+    message.send(connection)
+  File "/home/cesare/PycharmProjects/flask/venv/lib/python3.7/site-packages/flask_mail.py", line 152, in __exit__
+    self.host.quit()
+  File "/usr/lib/python3.7/smtplib.py", line 984, in quit
+    res = self.docmd("quit")
+  File "/usr/lib/python3.7/smtplib.py", line 420, in docmd
+    self.putcmd(cmd, args)
+  File "/usr/lib/python3.7/smtplib.py", line 367, in putcmd
+    self.send(str)
+  File "/usr/lib/python3.7/smtplib.py", line 359, in send
+    raise SMTPServerDisconnected('please run connect() first')
+smtplib.SMTPServerDisconnected: please run connect() first
+2020-07-13 18:29:49,657 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:47]
+2020-07-13 18:39:04,199 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:49]
+2020-07-13 18:50:30,806 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:49]
+2020-07-13 19:05:57,860 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:49]
+2020-07-13 19:10:10,213 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:49]
+2020-07-13 19:12:27,497 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:49]
+2020-07-13 19:16:58,692 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:49]
