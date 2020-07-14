@@ -9,6 +9,7 @@ from logging.handlers import RotatingFileHandler # for the file logging
 import os
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
+from flask_moment import Moment
 
 app = Flask(__name__)  # instance of a flask application
 app.config.from_object(Config)
@@ -19,6 +20,7 @@ login.login_view = 'login'# function name which will allow you to do a cool requ
 # where once user has logged in they get redirected to the protected page
 mail = Mail(app) # for emailing to users
 bootstrap = Bootstrap(app)
+moment = Moment(app)
 
 if not app.debug: # Only send when not debugging
     if app.config['MAIL_SERVER']: # And a mail server is configured

@@ -1,6 +1,13 @@
+<!-- For the boostrap blocks to inherit from the base bootstrap %}-->
 {% extends 'bootstrap/base.html' %}
 
-<!-- For the boostrap blocks to inherit from the base bootstrap %}-->
+<!-- Make the moment script be generated using the moment object -->
+{% block scripts %}
+    <!-- Super is necessary so that add the moment.js library, without losing the base contents -->
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock %}
+
 {% block title %}
         {% if title %}
         The {{title}} Page

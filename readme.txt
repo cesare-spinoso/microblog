@@ -63,3 +63,9 @@ mail.send(msg)
 
 For the bootstrap:
 pip install flask-bootstrap
+
+For the time zone moment.js and flask package:
+pip install flask-moment
+
+The moment class requires a timestamp in ISO format to be passed:
+{{ year }}-{{ month }}-{{ day }}T{{ hour }}:{{ minute }}:{{ second }}{{ timezone }}

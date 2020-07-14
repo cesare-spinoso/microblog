@@ -6,7 +6,8 @@
         <td><img src="{{user.avatar(128)}}" alt="Profile pic not available."></td>
         <td><h1>User: {{user.username}}</h1>
             <p>{% if user.about_me %} {{ user.about_me }} {% endif %}</p>
-            <p>{% if user.last_seen %} Last seen on : {{ user.last_seen }}{% endif %}</p>
+<!--            <p>{% if user.last_seen %} Last seen on : {{ user.last_seen }}{% endif %}</p>-->
+            <p>{% if user.last_seen %} Last seen on : {{ moment(user.last_seen).format('LLL') }}{% endif %}</p>
             <p>{{user.followers.count()}} followers, {{user.followed.count()}} following</p>
         </td>
     </tr>
