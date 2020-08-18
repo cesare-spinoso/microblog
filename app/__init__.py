@@ -10,6 +10,7 @@ import os
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+from flask_babel import Babel
 
 app = Flask(__name__)  # instance of a flask application
 app.config.from_object(Config)
@@ -21,6 +22,7 @@ login.login_view = 'login'# function name which will allow you to do a cool requ
 mail = Mail(app) # for emailing to users
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+babel = Babel(app)
 
 if not app.debug: # Only send when not debugging
     if app.config['MAIL_SERVER']: # And a mail server is configured
@@ -49,6 +51,16 @@ if not app.debug: # Only send when not debugging
 
     app.logger.setLevel(logging.INFO)
     app.logger.info('Microblog startup')
+
+
+# babel localeselector decorator for the translation to spanish
+# the decorator is invoked every time a language selection is invoked
+@babel.localeselector
+def get_locale():
+    # use the request object to deal with the accept-language header which
+    # specifies the client language and preferences as a weighted list
+    # what is returned is the "best language choice" which is computed
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 from app import routes, models, errors  # routes defined for the URL and models for the DB model/schema

@@ -23,3 +23,6 @@ class Config(object):
     # For the pagination
     POSTS_PER_PAGE = 10
 
+    # For the spanish language support
+    LANGUAGES = ['en', 'es']
+

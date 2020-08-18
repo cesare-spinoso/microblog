@@ -69,3 +69,6 @@ pip install flask-moment
 
 The moment class requires a timestamp in ISO format to be passed:
 {{ year }}-{{ month }}-{{ day }}T{{ hour }}:{{ minute }}:{{ second }}{{ timezone }}
+
+For the translation chapter (13) use flask-babel:
+pip install flask-babel
