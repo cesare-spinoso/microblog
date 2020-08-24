@@ -117,3 +117,5 @@ smtplib.SMTPServerDisconnected: please run connect() first
 2020-07-22 14:46:11,016 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:53]
 2020-07-22 14:51:14,440 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:53]
 2020-08-18 15:21:48,519 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:53]
+2020-08-24 12:56:45,046 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:53]
+2020-08-24 12:56:53,086 INFO: Microblog startup [in /home/cesare/PycharmProjects/flask/app/__init__.py:53]
