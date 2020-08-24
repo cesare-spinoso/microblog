@@ -20,4 +20,4 @@ Run the application locally with `flask run` setting `FLASK_APP = microblog.py` 
 
 ### Deployment
     
-This flask app is deployed on Heroku and can be found at [here](https://ces-microblog.herokuapp.com/login?next=%2F).
+This flask app is deployed on Heroku and can be found [here](https://ces-microblog.herokuapp.com/login?next=%2F).
